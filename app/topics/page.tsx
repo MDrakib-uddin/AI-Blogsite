@@ -214,7 +214,13 @@ export default function TopicsPage() {
   )
 }
 
-function TopicCard({ title, description, icon, count, slug = "" }) {
+function TopicCard({ title, description, icon, count, slug = "" }: {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  count: number;
+  slug?: string;
+}) {
   return (
     <Link href={`/articles/`} className="group">
       <Card className="bg-gray-900 border-gray-800 hover:border-purple-500/50 transition-colors h-full">
