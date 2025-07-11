@@ -252,7 +252,14 @@ export default function ArticlesPage() {
   )
 }
 
-function ArticleCard({ title, description, category, date, slug = "", image }) {
+function ArticleCard({ title, description, category, date, slug = "", image }: {
+  title: string;
+  description: string;
+  category: string;
+  date: string;
+  slug?: string;
+  image: string;
+}) {
   return (
     <Link href={`/blog/${slug}/`} className="group">
       <div className="space-y-3">
