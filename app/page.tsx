@@ -35,19 +35,39 @@ export default function Home() {
 
     setIsSubmitting(true)
 
-    // Simulate subscription process
-    setTimeout(() => {
-      toast({
-        title: "Subscription successful!",
-        description: "Thank you for subscribing to our newsletter.",
+    try {
+      const response = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
       })
-      setEmail("")
-      setIsSubmitting(false)
-    }, 1000)
 
-    // For GitHub Pages, you could use a service like Formspree or a Google Form
-    // to collect emails without needing a backend
-    // Example: window.open(`https://formspree.io/f/yourformid?email=${encodeURIComponent(email)}`, '_blank')
+      const data = await response.json()
+
+      if (response.ok) {
+        toast({
+          title: "Subscription successful!",
+          description: "Thank you for subscribing to our newsletter.",
+        })
+        setEmail("")
+      } else {
+        toast({
+          title: "Subscription failed",
+          description: data.error || "Failed to subscribe to newsletter.",
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      toast({
+        title: "Subscription failed",
+        description: "An error occurred while subscribing to the newsletter.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleLogout = async () => {
@@ -78,8 +98,16 @@ export default function Home() {
             <Link href="/about/" className="text-gray-400 hover:text-white transition-colors">
               About
             </Link>
+            {user && (
+              <Link href="/bookmarks/" className="text-gray-400 hover:text-white transition-colors">
+                Bookmarks
+              </Link>
+            )}
           </nav>
           <div className="flex items-center space-x-4">
+            <div className="hidden md:block w-64">
+              {/* <SearchBar /> */}
+            </div>
             {user ? (
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-400">{user.email}</span>

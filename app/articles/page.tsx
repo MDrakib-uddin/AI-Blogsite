@@ -1,97 +1,83 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { BrainCircuit, Clock, Github, Linkedin, Mail, Rss, Twitter } from "lucide-react"
+import { BrainCircuit, Clock, Github, Linkedin, Mail, Rss, Twitter, Filter } from "lucide-react"
 import { useRouter } from "next/navigation"
-
-// Static article data for GitHub Pages
-const articles = [
-  {
-    title: "The Evolution of Generative Adversarial Networks: From GAN to StyleGAN-3",
-    description:
-      "Explore the development of GAN architectures, highlighting key milestones like Progressive GAN, StyleGAN-1, StyleGAN-2, and the latest advancements in StyleGAN-3.",
-    category: "GenAI",
-    date: "May 15, 2023",
-    slug: "evolution-of-gans",
-    image: "https://images.unsplash.com/photo-1617791160505-6f00504e3519?q=80&w=600&h=400&auto=format&fit=crop",
-  },
-  {
-    title: "AI in 2025: Transforming Daily Life",
-    description:
-      "Discuss how generative AI has integrated into everyday activities by 2025, providing personal style tips, translating conversations, analyzing diets, and more.",
-    category: "Future Tech",
-    date: "June 2, 2023",
-    slug: "ai-in-2025",
-    image: "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?q=80&w=600&h=400&auto=format&fit=crop",
-  },
-  {
-    title: "The Rise of Multimodal AI Models: Bridging Text, Image, and Beyond",
-    description:
-      "Examine the emergence of multimodal AI models that process and generate multiple data types, such as text, images, and videos, and their applications in various industries.",
-    category: "AI Research",
-    date: "June 28, 2023",
-    slug: "multimodal-ai-models",
-    image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=600&h=400&auto=format&fit=crop",
-  },
-  {
-    title: "Advancements in AI-Driven 3D Modeling and Virtual World Creation",
-    description:
-      "Explore how AI is revolutionizing 3D modeling and virtual world creation, enabling users to transform written prompts into immersive experiences.",
-    category: "3D Modeling",
-    date: "July 5, 2023",
-    slug: "ai-driven-3d-modeling",
-    image: "https://images.unsplash.com/photo-1633412802994-5c058f151b66?q=80&w=600&h=400&auto=format&fit=crop",
-  },
-  {
-    title: "The Integration of AI in Wearable Technology: Enhancing User Experience",
-    description:
-      "Analyze the incorporation of AI into wearable devices, such as smart glasses, and how it enhances user interaction through features like real-world navigation and information accessibility.",
-    category: "Wearable Tech",
-    date: "July 18, 2023",
-    slug: "ai-in-wearable-technology",
-    image: "https://images.unsplash.com/photo-1551808525-51a94da548ce?q=80&w=600&h=400&auto=format&fit=crop",
-  },
-  {
-    title: "Computer Vision in Autonomous Vehicles",
-    description:
-      "Exploring how computer vision algorithms are enabling self-driving cars to perceive and navigate complex environments.",
-    category: "Computer Vision",
-    date: "August 3, 2023",
-    slug: "computer-vision-autonomous-vehicles",
-    image: "https://images.unsplash.com/photo-1563630381190-77c336ea545a?q=80&w=600&h=400&auto=format&fit=crop",
-  },
-  {
-    title: "Deep Learning for Natural Language Processing",
-    description: "How transformer models have revolutionized our ability to understand and generate human language.",
-    category: "NLP",
-    date: "August 15, 2023",
-    slug: "deep-learning-nlp",
-    image: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80&w=600&h=400&auto=format&fit=crop",
-  },
-  {
-    title: "Ethical Considerations in Generative AI",
-    description:
-      "Examining the ethical implications of AI-generated content and the responsibility of AI researchers and practitioners.",
-    category: "AI Ethics",
-    date: "September 2, 2023",
-    slug: "ethical-considerations-genai",
-    image: "https://images.unsplash.com/photo-1507146153580-69a1fe6d8aa1?q=80&w=600&h=400&auto=format&fit=crop",
-  },
-  {
-    title: "The Future of AI Research: What's Next?",
-    description:
-      "Predictions and insights into the next frontiers of artificial intelligence research and development.",
-    category: "Future of AI",
-    date: "September 20, 2023",
-    slug: "future-of-ai-research",
-    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=600&h=400&auto=format&fit=crop",
-  },
-]
+import { supabase } from "@/lib/supabaseClient"
 
 export default function ArticlesPage() {
+  const [articles, setArticles] = useState<any[]>([])
+  const [filteredArticles, setFilteredArticles] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [selectedCategory, setSelectedCategory] = useState("all")
+  const [categories, setCategories] = useState<string[]>([])
   const router = useRouter()
+
+  useEffect(() => {
+    fetchArticles()
+  }, [])
+
+  useEffect(() => {
+    if (selectedCategory === "all") {
+      setFilteredArticles(articles)
+    } else {
+      setFilteredArticles(articles.filter(article => article.category === selectedCategory))
+    }
+  }, [selectedCategory, articles])
+
+  const fetchArticles = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("posts")
+        .select("*")
+        .order("created_at", { ascending: false })
+      
+      if (error) {
+        console.error("Error fetching articles:", error)
+        // Fallback to static data if Supabase fails
+        const fallbackData = [
+          {
+            title: "The Evolution of Generative Adversarial Networks: From GAN to StyleGAN-3",
+            description: "Explore the development of GAN architectures, highlighting key milestones like Progressive GAN, StyleGAN-1, StyleGAN-2, and the latest advancements in StyleGAN-3.",
+            category: "GenAI",
+            date: "May 15, 2023",
+            slug: "evolution-of-gans",
+            image: "https://images.unsplash.com/photo-1617791160505-6f00504e3519?q=80&w=600&h=400&auto=format&fit=crop",
+          },
+          {
+            title: "AI in 2025: Transforming Daily Life",
+            description: "Discuss how generative AI has integrated into everyday activities by 2025, providing personal style tips, translating conversations, analyzing diets, and more.",
+            category: "Future Tech",
+            date: "June 2, 2023",
+            slug: "ai-in-2025",
+            image: "https://images.unsplash.com/photo-1531746790731-6c087fecd65a?q=80&w=600&h=400&auto=format&fit=crop",
+          },
+          {
+            title: "The Rise of Multimodal AI Models: Bridging Text, Image, and Beyond",
+            description: "Examine the emergence of multimodal AI models that process and generate multiple data types, such as text, images, and videos, and their applications in various industries.",
+            category: "AI Research",
+            date: "June 28, 2023",
+            slug: "multimodal-ai-models",
+            image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=600&h=400&auto=format&fit=crop",
+          },
+        ]
+        setArticles(fallbackData)
+        setFilteredArticles(fallbackData)
+        setCategories([...new Set(fallbackData.map(article => article.category))])
+      } else {
+        setArticles(data || [])
+        setFilteredArticles(data || [])
+        setCategories([...new Set((data || []).map(article => article.category))])
+      }
+    } catch (error) {
+      console.error("Error:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleSubscribeClick = () => {
     router.push("/#newsletter")
@@ -130,21 +116,60 @@ export default function ArticlesPage() {
 
       <main className="container mx-auto px-4 py-12">
         <section className="mb-12">
-          <h1 className="text-4xl font-bold mb-8">All Articles</h1>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {articles.map((article, index) => (
-              <ArticleCard
-                key={index}
-                title={article.title}
-                description={article.description}
-                category={article.category}
-                date={article.date}
-                slug={article.slug}
-                image={article.image}
-              />
-            ))}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+            <h1 className="text-4xl font-bold mb-4 md:mb-0">All Articles</h1>
+            
+            {/* Category Filter */}
+            <div className="flex items-center gap-2">
+              <Filter className="h-4 w-4 text-gray-400" />
+              <span className="text-sm text-gray-400">Filter by:</span>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="bg-gray-900 border border-gray-700 text-white px-3 py-1 rounded text-sm"
+              >
+                <option value="all">All Categories</option>
+                {categories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
+
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto"></div>
+              <p className="mt-4 text-gray-400">Loading articles...</p>
+            </div>
+          ) : (
+            <>
+              {filteredArticles.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-gray-400 text-lg">No articles found in this category.</p>
+                </div>
+              ) : (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredArticles.map((article, index) => (
+                    <ArticleCard
+                      key={article.id || index}
+                      title={article.title}
+                      description={article.description}
+                      category={article.category}
+                      date={new Date(article.created_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                      slug={article.slug}
+                      image={article.image}
+                    />
+                  ))}
+                </div>
+              )}
+            </>
+          )}
         </section>
       </main>
 
@@ -174,77 +199,39 @@ export default function ArticlesPage() {
               </div>
             </div>
             <div>
-              <h3 className="font-medium mb-4">Topics</h3>
+              <h3 className="font-semibold mb-4">Topics</h3>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Artificial Intelligence
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Generative AI
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Computer Vision
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Deep Learning
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Machine Learning
-                  </Link>
-                </li>
+                <li><Link href="/topics/" className="hover:text-white">Generative AI</Link></li>
+                <li><Link href="/topics/" className="hover:text-white">Computer Vision</Link></li>
+                <li><Link href="/topics/" className="hover:text-white">Deep Learning</Link></li>
+                <li><Link href="/topics/" className="hover:text-white">AI Ethics</Link></li>
               </ul>
             </div>
             <div>
-              <h3 className="font-medium mb-4">Resources</h3>
+              <h3 className="font-semibold mb-4">Resources</h3>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Tutorials
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Research Papers
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Code Samples
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Datasets
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white">
-                    Tools
-                  </Link>
-                </li>
+                <li><Link href="/about/" className="hover:text-white">About Us</Link></li>
+                <li><Link href="#" className="hover:text-white">Privacy Policy</Link></li>
+                <li><Link href="#" className="hover:text-white">Terms of Service</Link></li>
+                <li><Link href="#" className="hover:text-white">Contact</Link></li>
               </ul>
             </div>
             <div>
-              <h3 className="font-medium mb-4">Contact</h3>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li className="flex items-center gap-2">
-                  <Mail className="h-4 w-4" />
-                  <span>ameyaudeshmukh@gmail.com</span>
-                </li>
-              </ul>
+              <h3 className="font-semibold mb-4">Newsletter</h3>
+              <p className="text-gray-400 text-sm mb-4">
+                Stay updated with the latest AI research and insights.
+              </p>
+              <Button
+                variant="outline"
+                className="border-purple-500 text-purple-500 hover:bg-purple-950 hover:text-white"
+                onClick={handleSubscribeClick}
+              >
+                Subscribe
+              </Button>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-12 pt-6 text-sm text-gray-400">
-            <p>© {new Date().getFullYear()} NeuralPulse. All rights reserved.</p>
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
+            <p>&copy; 2024 NeuralPulse. All rights reserved.</p>
           </div>
         </div>
       </footer>

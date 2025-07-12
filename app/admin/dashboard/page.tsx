@@ -93,27 +93,27 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white p-0 md:p-8">
+    <div className="min-h-screen bg-black text-white p-4 md:p-8 max-w-full overflow-x-hidden">
       {/* Top Bar */}
-      <div className="flex items-center justify-between px-4 py-6 border-b border-gray-800 mb-8">
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+      <div className="flex flex-col md:flex-row items-center justify-between px-4 py-6 border-b border-gray-800 mb-8 gap-4">
+        <h1 className="text-2xl md:text-3xl font-bold">Admin Dashboard</h1>
         <button onClick={handleLogout} className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded">Logout</button>
       </div>
 
       {/* Add/Edit Blog Form */}
-      <div className="max-w-2xl mx-auto bg-gray-900 p-6 rounded-lg mb-8 shadow-lg">
+      <div className="max-w-2xl mx-auto bg-gray-900 p-4 md:p-6 rounded-lg mb-8 shadow-lg">
         <h2 className="text-xl font-bold mb-4">{editId ? "Edit Post" : "Add New Post"}</h2>
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input name="title" value={form.title} onChange={handleChange} placeholder="Title" className="p-2 rounded bg-gray-800 border border-gray-700" required />
-            <input name="slug" value={form.slug} onChange={handleChange} placeholder="Slug (unique)" className="p-2 rounded bg-gray-800 border border-gray-700" required />
-            <input name="author" value={form.author} onChange={handleChange} placeholder="Author" className="p-2 rounded bg-gray-800 border border-gray-700" />
-            <input name="category" value={form.category} onChange={handleChange} placeholder="Category" className="p-2 rounded bg-gray-800 border border-gray-700" />
-            <input name="image" value={form.image} onChange={handleChange} placeholder="Image URL" className="p-2 rounded bg-gray-800 border border-gray-700" />
+            <input name="title" value={form.title} onChange={handleChange} placeholder="Title" className="p-2 rounded bg-gray-800 border border-gray-700 w-full" required />
+            <input name="slug" value={form.slug} onChange={handleChange} placeholder="Slug (unique)" className="p-2 rounded bg-gray-800 border border-gray-700 w-full" required />
+            <input name="author" value={form.author} onChange={handleChange} placeholder="Author" className="p-2 rounded bg-gray-800 border border-gray-700 w-full" />
+            <input name="category" value={form.category} onChange={handleChange} placeholder="Category" className="p-2 rounded bg-gray-800 border border-gray-700 w-full" />
+            <input name="image" value={form.image} onChange={handleChange} placeholder="Image URL" className="p-2 rounded bg-gray-800 border border-gray-700 w-full md:col-span-2" />
           </div>
           <textarea name="description" value={form.description} onChange={handleChange} placeholder="Description" className="w-full p-2 mt-4 rounded bg-gray-800 border border-gray-700" />
           <textarea name="content" value={form.content} onChange={handleChange} placeholder="Content" className="w-full p-2 mt-4 rounded bg-gray-800 border border-gray-700" />
-          <div className="flex gap-4 mt-4">
+          <div className="flex flex-col sm:flex-row gap-4 mt-4">
             <button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
               {editId ? "Update" : "Add"}
             </button>
@@ -129,35 +129,55 @@ export default function AdminDashboard() {
       </div>
 
       {/* Blog List Table */}
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-full mx-auto">
         <h2 className="text-xl font-bold mb-4">All Posts</h2>
         {loading ? (
           <div>Loading...</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr>
-                  <th className="border-b border-gray-700 p-2">Title</th>
-                  <th className="border-b border-gray-700 p-2">Slug</th>
-                  <th className="border-b border-gray-700 p-2">Category</th>
-                  <th className="border-b border-gray-700 p-2">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {posts.map(post => (
-                  <tr key={post.id}>
-                    <td className="border-b border-gray-800 p-2">{post.title}</td>
-                    <td className="border-b border-gray-800 p-2">{post.slug}</td>
-                    <td className="border-b border-gray-800 p-2">{post.category}</td>
-                    <td className="border-b border-gray-800 p-2">
-                      <button onClick={() => handleEdit(post)} className="mr-2 text-blue-400 hover:underline">Edit</button>
-                      <button onClick={() => handleDelete(post.id)} className="text-red-400 hover:underline">Delete</button>
-                    </td>
+          <div className="w-full">
+            {/* Mobile View - Cards */}
+            <div className="md:hidden space-y-4">
+              {posts.map(post => (
+                <div key={post.id} className="bg-gray-900 p-4 rounded-lg border border-gray-800">
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="font-semibold text-sm">{post.title}</h3>
+                    <div className="flex gap-2">
+                      <button onClick={() => handleEdit(post)} className="text-blue-400 hover:underline text-xs">Edit</button>
+                      <button onClick={() => handleDelete(post.id)} className="text-red-400 hover:underline text-xs">Delete</button>
+                    </div>
+                  </div>
+                  <p className="text-gray-400 text-xs mb-1">Slug: {post.slug}</p>
+                  <p className="text-gray-400 text-xs">Category: {post.category}</p>
+                </div>
+              ))}
+            </div>
+            
+            {/* Desktop View - Table */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr>
+                    <th className="border-b border-gray-700 p-2">Title</th>
+                    <th className="border-b border-gray-700 p-2">Slug</th>
+                    <th className="border-b border-gray-700 p-2">Category</th>
+                    <th className="border-b border-gray-700 p-2">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {posts.map(post => (
+                    <tr key={post.id}>
+                      <td className="border-b border-gray-800 p-2">{post.title}</td>
+                      <td className="border-b border-gray-800 p-2">{post.slug}</td>
+                      <td className="border-b border-gray-800 p-2">{post.category}</td>
+                      <td className="border-b border-gray-800 p-2">
+                        <button onClick={() => handleEdit(post)} className="mr-2 text-blue-400 hover:underline">Edit</button>
+                        <button onClick={() => handleDelete(post.id)} className="text-red-400 hover:underline">Delete</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>
