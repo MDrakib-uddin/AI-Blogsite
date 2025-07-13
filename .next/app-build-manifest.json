@@ -50,6 +50,11 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/admin/learning-path/page.js"
+    ],
+    "/blog/[slug]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/blog/[slug]/page.js"
     ]
   }
 }

@@ -1,7 +1,10 @@
 {
-  "/page": "app/page.js",
   "/admin/dashboard/page": "app/admin/dashboard/page.js",
+  "/blog/[slug]/page": "app/blog/[slug]/page.js",
+  "/page": "app/page.js",
+  "/topics/page": "app/topics/page.js",
+  "/articles/page": "app/articles/page.js",
   "/login/page": "app/login/page.js",
-  "/about/page": "app/about/page.js",
-  "/admin/learning-path/page": "app/admin/learning-path/page.js"
+  "/learning-path/page": "app/learning-path/page.js",
+  "/api/learning-path/route": "app/api/learning-path/route.js"
 }

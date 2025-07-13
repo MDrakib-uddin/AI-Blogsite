@@ -55,16 +55,25 @@ export default function AdminDashboard() {
     setEditPost(post)
   }
   async function handleEditPost(e: any) {
-    e.preventDefault()
-    if (!editPost) return
-    const { error } = await supabase.from("posts").update(editPost).eq("id", editPost.id)
-    if (error) setError(error.message)
-    setEditPost(null)
-    fetchPosts()
+    e.preventDefault();
+    if (!editPost) return;
+    // Remove id from update object
+    const { id, ...updateFields } = editPost;
+    const { error } = await supabase.from("posts").update(updateFields).eq("id", id);
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    setEditPost(null);
+    fetchPosts();
   }
   async function handleDeletePost(id: string) {
     if (!confirm("Delete this post?")) return
-    await supabase.from("posts").delete().eq("id", id)
+    const { error } = await supabase.from("posts").delete().eq("id", id)
+    if (error) {
+      setError(error.message)
+      return
+    }
     fetchPosts()
   }
 
