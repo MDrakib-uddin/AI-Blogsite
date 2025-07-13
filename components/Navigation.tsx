@@ -8,7 +8,7 @@ export default function Navigation() {
   const { user, signOut } = useAuth?.() || {};
   const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <header className="container mx-auto py-6">
+    <header className="w-full max-w-7xl mx-auto px-4 py-6">
       <div className="flex items-center justify-between">
         <Link href="/" className="text-xl font-bold tracking-tighter">
           Neural<span className="text-purple-500">Pulse</span>
