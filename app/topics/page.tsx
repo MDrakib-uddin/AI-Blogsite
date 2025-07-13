@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { BrainCircuit, Cpu, Eye, Github, Linkedin, Mail, Rss, Twitter } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 // Static topic data for GitHub Pages
 const topics = [
@@ -55,6 +56,7 @@ const topics = [
 
 export default function TopicsPage() {
   const router = useRouter()
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const handleSubscribeClick = () => {
     router.push("/#newsletter")
@@ -67,6 +69,18 @@ export default function TopicsPage() {
           <Link href="/" className="text-xl font-bold tracking-tighter">
             Neural<span className="text-purple-500">Pulse</span>
           </Link>
+          {/* Mobile menu button */}
+          <button
+            className="md:hidden text-white focus:outline-none"
+            aria-label="Open menu"
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            {/* Hamburger icon */}
+            <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          {/* Desktop menu */}
           <nav className="hidden md:flex items-center space-x-6 text-sm">
             <Link href="/" className="text-gray-400 hover:text-white transition-colors">
               Home
@@ -80,8 +94,31 @@ export default function TopicsPage() {
             <Link href="/about/" className="text-gray-400 hover:text-white transition-colors">
               About
             </Link>
+            <Link href="/learning-path" className="text-gray-400 hover:text-white transition-colors">
+              Core CS
+            </Link>
           </nav>
         </div>
+        {/* Mobile menu dropdown */}
+        {menuOpen && (
+          <nav className="flex flex-col md:hidden bg-gray-900 rounded-lg mt-4 px-4 py-3 space-y-2 shadow-lg z-50">
+            <Link href="/" className="text-gray-200 hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>
+              Home
+            </Link>
+            <Link href="/articles/" className="text-gray-200 hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>
+              Articles
+            </Link>
+            <Link href="/topics/" className="text-white transition-colors border-b-2 border-purple-500 pb-1" onClick={() => setMenuOpen(false)}>
+              Topics
+            </Link>
+            <Link href="/about/" className="text-gray-200 hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>
+              About
+            </Link>
+            <Link href="/learning-path" className="text-gray-200 hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>
+              Core CS
+            </Link>
+          </nav>
+        )}
       </header>
 
       <main className="container mx-auto px-4 py-12">
