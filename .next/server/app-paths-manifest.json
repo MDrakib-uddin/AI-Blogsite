@@ -1,5 +1,4 @@
 {
-  "/learning-path/page": "app/learning-path/page.js",
   "/page": "app/page.js",
-  "/admin/learning-path/page": "app/admin/learning-path/page.js"
+  "/_not-found/page": "app/_not-found/page.js"
 }
