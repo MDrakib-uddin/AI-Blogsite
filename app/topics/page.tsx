@@ -81,13 +81,6 @@ export default function TopicsPage() {
               About
             </Link>
           </nav>
-          <Button
-            variant="outline"
-            className="border-purple-500 text-purple-500 hover:bg-purple-950 hover:text-white"
-            onClick={handleSubscribeClick}
-          >
-            Subscribe
-          </Button>
         </div>
       </header>
 

@@ -98,6 +98,14 @@ export default function Home() {
             <Link href="/about/" className="text-gray-400 hover:text-white transition-colors">
               About
             </Link>
+            <Link href="/learning-path" className="text-gray-400 hover:text-white transition-colors">
+              লার্নিং পাথ
+            </Link>
+            {user && user.email === "rakibuddinraki2003@gmail.com" && (
+              <Link href="/admin/dashboard" className="text-gray-400 hover:text-white transition-colors">
+                Admin Dashboard
+              </Link>
+            )}
             {user && (
               <Link href="/bookmarks/" className="text-gray-400 hover:text-white transition-colors">
                 Bookmarks
@@ -139,13 +147,6 @@ export default function Home() {
                 </Button>
               </div>
             )}
-            <Button
-              variant="outline"
-              className="border-purple-500 text-purple-500 hover:bg-purple-950 hover:text-white"
-              onClick={scrollToNewsletter}
-            >
-              Subscribe
-            </Button>
           </div>
         </div>
       </header>

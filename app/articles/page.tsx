@@ -104,13 +104,6 @@ export default function ArticlesPage() {
               About
             </Link>
           </nav>
-          <Button
-            variant="outline"
-            className="border-purple-500 text-purple-500 hover:bg-purple-950 hover:text-white"
-            onClick={handleSubscribeClick}
-          >
-            Subscribe
-          </Button>
         </div>
       </header>
 
@@ -221,13 +214,6 @@ export default function ArticlesPage() {
               <p className="text-gray-400 text-sm mb-4">
                 Stay updated with the latest AI research and insights.
               </p>
-              <Button
-                variant="outline"
-                className="border-purple-500 text-purple-500 hover:bg-purple-950 hover:text-white"
-                onClick={handleSubscribeClick}
-              >
-                Subscribe
-              </Button>
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">

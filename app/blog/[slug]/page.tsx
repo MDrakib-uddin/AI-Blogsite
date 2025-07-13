@@ -88,18 +88,6 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
           <Link href="/" className="text-xl font-bold tracking-tighter">
             Neural<span className="text-purple-500">Pulse</span>
           </Link>
-          <Button
-            variant="outline"
-            className="border-purple-500 text-purple-500 hover:bg-purple-950 hover:text-white"
-            onClick={() => {
-              const newsletterSection = document.getElementById("newsletter")
-              if (newsletterSection) {
-                newsletterSection.scrollIntoView({ behavior: "smooth" })
-              }
-            }}
-          >
-            Subscribe
-          </Button>
         </div>
       </header>
 
